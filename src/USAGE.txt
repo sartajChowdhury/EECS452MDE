@@ -1,0 +1,2 @@
+USAGE.txt
+There are two main steps to run our code. The first step is to flash ECG_Final.ino onto the ESP-32-WROVER-E board using the Arduino IDE. The second step is to run the ECG_plot2.8.py script and press reset on the ESP-32 so the Python script receives the Serial "START" message. ECG_plot2.8.py will then output the Serial data it is receiving from ECG_Final.ino at 300 Hz. The Arduino IDE serial monitor must be closed in order to run our Python script.

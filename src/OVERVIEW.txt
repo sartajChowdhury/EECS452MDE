@@ -1,0 +1,31 @@
+OVERVIEW.txt
+There are two source code files in this folder: ECG_Final.ino and ECG_plot2.8.py
+
+********************************************************************************************************************
+ECG_Final.ino: This is an Arduino sketch and it is responsible for sampling the amplified ECG signal from the analog circuit at 300 Hz. This sketch was flashed onto an ESP-32-WROVER-E for this project.
+Setup:
+    -This file first begins Serial communication at a baud rate of 115200
+    -It then applies a 5 seconds delay to avoid transient issues affecting the ECG signal
+    -After that it sends a "START" message through Serial to tell the Python script to begin plotting the Serial data it receives
+
+Main Loop:
+-It starts by reading the analog pin attached to the output of the analog circuit. 
+-It then applies the 0.5-150 Hz bandpass filter using the Arduino-Filters library functions lowFilt() and highFilt(). 
+-Next it applies the 60 Hz notch filter using our applyNotchFilter() convolution function
+-It prints the filtered data to Serial so the Python script can plot it
+-Next we apply the steps of the Pan-Tompkins Algorithm to one sample of data at a time
+    -Apply our computeDerivative() function
+    -Apply our Squared() function
+    -Apply our computeIntegration() moving window integration function
+    -Apply our detectPeaks() function
+        -This function detects the R-peaks of the signal while also continously updating the thresholds for the signal and noise based on the             signal
+    -Every time we detect a peak from detect peaks then we calculate the heart rate in BPM
+-Once we read 900 samples of data then we reset our sample index to 0
+
+********************************************************************************************************************
+
+ECG_plot2.8.py: This Python script is responsible for reading in the Serial data that ECG_Final.ino is outputting and plotting the data in real-time. We developed and tested this code using Visual Studio Code. After running this script, it will wait to receive the "START" message from ECG_Final.ino before it starts plotting the ECG data in real time. This script makes use of deques, blipping and the FuncAnimation library to effectively plot in real-time at 300 Hz.
+
+
+
+
